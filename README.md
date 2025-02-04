@@ -1,21 +1,27 @@
 # Fetch Application
+
 This is a React application for Fetch.
 
 ## Requirements
+
 Node.js >= 14.x
 
 npm
 
 ## Installation
+
 To run just the frontend
 
 ### Install Dependencies:
+
 npm install
 
 ### Start the Development Server:
+
 npm start
 
 ## Available Scripts
+
 In the project directory, you can run:
 
 - `npm run start` Runs the frontend in the development mode.\
@@ -36,7 +42,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ```sh
 |-- public
-|   |-- favicon.svg
+|   |-- fetchIcon.png
 |   |-- index.html
 |   |-- manifest.json
 |   |-- robots.txt
@@ -49,6 +55,8 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 |   |   |   |   |-- Header.tsx
 |   |   |   |-- index.ts
 |   |   |   |-- layout.tsx
+|   |   |-- protectedRoutes
+|   |   |   |-- protectedRoutes.tsx
 |   |-- hooks
 |   |   |-- __test__
 |   |   |   |-- useFetcher.spec.tsx
@@ -57,15 +65,12 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 |   |   |-- useForm.ts
 |   |-- index.tsx
 |   |-- pages
-|   |   |-- CreditCardValidator.tsx
 |   |   |-- NotFound.tsx
 |   |   |-- __test__
-|   |   |   |-- CreditCardValidator.spec.tsx
 |   |   |   |-- NotFound.spec.tsx
 |   |-- setupTests.ts
 |   |-- types
-|   |   |-- CreditCard.ts
-|   |   |-- CreditCardValidatorResponse.ts
+|   |   |-- Login.types.ts
 |   |   |-- UseFetcher.types.ts
 |   |   |-- UseForm.types.ts
 |-- .eslintrc.cjs
@@ -76,6 +81,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 ```
 
 ## Learn More
+
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
