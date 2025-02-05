@@ -1,6 +1,6 @@
 export interface UseFetcherReturnProps<T> {
   loading: boolean
-  result: T | null
+  result: T | null | boolean
   fetchApi: () => Promise<void>
 }
 

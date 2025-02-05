@@ -19,7 +19,7 @@ import { UseFetcherProps, UseFetcherReturnProps } from '../types/UseFetcher.type
  */
 export const useFetcher = <T>({ method, url, body }: UseFetcherProps): UseFetcherReturnProps<T> => {
   const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState<T | null>(null)
+  const [result, setResult] = useState<T | null | boolean>(null)
 
   const fetchApi = async () => {
     setLoading(true)
@@ -29,6 +29,7 @@ export const useFetcher = <T>({ method, url, body }: UseFetcherProps): UseFetche
         'Content-Type': 'application/json',
       },
       method,
+      credentials: 'include',
     }
 
     try {
@@ -36,8 +37,12 @@ export const useFetcher = <T>({ method, url, body }: UseFetcherProps): UseFetche
       if (!response.ok) {
         throw new Error('Network response was not ok')
       }
-      const data = await response.json()
-      setResult(data)
+      if (method === 'GET') {
+        const data = await response.json()
+        setResult(data)
+      } else {
+        setResult(true)
+      }
     } catch (error) {
       setResult(null)
     } finally {
