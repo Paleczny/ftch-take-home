@@ -4,7 +4,6 @@ import { AuthContext } from '../../contexts/AuthContext'
 
 const ProtectedRoutes = () => {
   const context = useContext(AuthContext)
-  console.log('context?.authenticated: ', context?.authenticated)
 
   return context?.authenticated ? <Outlet /> : <Navigate to="/login" />
 }
