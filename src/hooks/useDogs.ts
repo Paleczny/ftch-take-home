@@ -21,15 +21,21 @@ export const dogFetcher = async (url: string, method: string, body: string[] = [
 
   return response.json()
 }
-export const useDogIds = (breeds?: string) => {
+export const useDogIds = (breeds?: string, zipCodes?: string) => {
   const breedsArray = breeds
     ? breeds.split(',').map((breed) => {
         return ['breeds', breed]
       })
     : []
-  const breedsQueryParam = new URLSearchParams(breedsArray)
+  const zipCodesArray = zipCodes
+    ? zipCodes.split(',').map((zipCode) => {
+        return ['zipCodes', zipCode]
+      })
+    : []
+  const queryParam = new URLSearchParams([...breedsArray, ...zipCodesArray])
   const url = new URL('https://frontend-take-home-service.fetch.com/dogs/search')
-  url.search = breedsQueryParam.toString()
+  url.search = queryParam.toString()
+
   return useSWR<DogId, Error>(
     { url: url.toString(), method: 'GET' },
     ({ url, method }: DogFetcherType) => dogFetcher(url, method),
