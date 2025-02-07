@@ -32,3 +32,10 @@ export const useDogs = (dogIDs: string[]) => {
     ({ url, method }: DogFetcherType) => dogFetcher(url, method, dogIDs),
   )
 }
+
+export const useDogBreeds = () => {
+  return useSWR<string[], Error>(
+      { url: 'https://frontend-take-home-service.fetch.com/dogs/breeds', method: 'GET' },
+      ({ url, method }: DogFetcherType) => dogFetcher(url, method),
+  )
+}
