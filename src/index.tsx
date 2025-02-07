@@ -26,8 +26,8 @@ const router = createBrowserRouter([
           {
             path: '/',
             async lazy() {
-              const { Dogs } = await import('./pages/Dogs');
-              return { Component: Dogs };
+              const { Dogs } = await import('./pages/Dogs')
+              return { Component: Dogs }
             },
           },
         ],
