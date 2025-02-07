@@ -1,12 +1,13 @@
 import useSWR from 'swr'
 import { DogId } from '../types/DogId.types'
-import { Dog } from '../types/Dog.type'
+import { Dog } from '../types/Dog.types'
 
 interface DogFetcherType {
   url: string
   method: 'GET' | 'POST'
   body: string[]
 }
+
 export const dogFetcher = async (url: string, method: string, body: string[] = []) => {
   const requestInit: RequestInit = {
     headers: {
@@ -15,21 +16,32 @@ export const dogFetcher = async (url: string, method: string, body: string[] = [
     method,
     credentials: 'include',
   }
-  const response = await fetch(url, method === 'GET' ? requestInit : { ...requestInit, body: JSON.stringify(body) })
+
+  const response = await fetch(url, body.length === 0 ? requestInit : { ...requestInit, body: JSON.stringify(body) })
 
   return response.json()
 }
-export const useDogIds = () => {
+export const useDogIds = (breeds?: string) => {
+  const breedsArray = breeds
+    ? breeds.split(',').map((breed) => {
+        return ['breeds', breed]
+      })
+    : []
+  const breedsQueryParam = new URLSearchParams(breedsArray)
+  const url = new URL('https://frontend-take-home-service.fetch.com/dogs/search')
+  url.search = breedsQueryParam.toString()
   return useSWR<DogId, Error>(
-    { url: 'https://frontend-take-home-service.fetch.com/dogs/search', method: 'GET' },
+    { url: url.toString(), method: 'GET' },
     ({ url, method }: DogFetcherType) => dogFetcher(url, method),
+    { revalidateOnFocus: false },
   )
 }
 
 export const useDogs = (dogIDs: string[]) => {
   return useSWR<Dog[], Error>(
-    { url: 'https://frontend-take-home-service.fetch.com/dogs', method: 'POST' },
-    ({ url, method }: DogFetcherType) => dogFetcher(url, method, dogIDs),
+    dogIDs.length > 0 ? ['dogs', ...dogIDs] : null, // Use an array key to track dependencies
+    () => dogFetcher('https://frontend-take-home-service.fetch.com/dogs', 'POST', dogIDs),
+    { revalidateOnFocus: false },
   )
 }
 
@@ -37,5 +49,6 @@ export const useDogBreeds = () => {
   return useSWR<string[], Error>(
     { url: 'https://frontend-take-home-service.fetch.com/dogs/breeds', method: 'GET' },
     ({ url, method }: DogFetcherType) => dogFetcher(url, method),
+    { revalidateOnFocus: false },
   )
 }
