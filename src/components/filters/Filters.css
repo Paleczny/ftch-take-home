@@ -1,0 +1,7 @@
+.thumbSlider {
+  top: -4px;
+  border: 2px solid black !important;
+  height: 20px;
+  width: 20px;
+  z-index: unset !important;
+}

@@ -1,6 +1,7 @@
 import useSWR from 'swr'
 import { DogId } from '../types/DogId.types'
 import { Dog } from '../types/Dog.types'
+import { useEffect, useState } from 'react'
 
 interface DogFetcherType {
   url: string
@@ -21,25 +22,37 @@ export const dogFetcher = async (url: string, method: string, body: string[] = [
 
   return response.json()
 }
-export const useDogIds = (breeds?: string, zipCodes?: string) => {
-  const breedsArray = breeds
-    ? breeds.split(',').map((breed) => {
-        return ['breeds', breed]
-      })
-    : []
-  const zipCodesArray = zipCodes
-    ? zipCodes.split(',').map((zipCode) => {
-        return ['zipCodes', zipCode]
-      })
-    : []
-  const queryParam = new URLSearchParams([...breedsArray, ...zipCodesArray])
+export const useDogIds = (breeds?: string, zipCodes?: string, minAge?: string, maxAge?: string) => {
+  const [debouncedBreeds, setDebouncedBreeds] = useState(breeds)
+  const [debouncedZipCodes, setDebouncedZipCodes] = useState(zipCodes)
+  const [debouncedMinAge, setDebouncedMinAge] = useState(minAge)
+  const [debouncedMaxAge, setDebouncedMaxAge] = useState(maxAge)
+
+  // Debounce function to delay updating the state
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedBreeds(breeds)
+      setDebouncedZipCodes(zipCodes)
+      setDebouncedMinAge(minAge)
+      setDebouncedMaxAge(maxAge)
+    }, 500)
+
+    return () => clearTimeout(handler)
+  }, [breeds, zipCodes, minAge, maxAge])
+
+  // Construct Query Parameters
+  const breedsArray = debouncedBreeds ? debouncedBreeds.split(',').map((breed) => ['breeds', breed]) : []
+  const zipCodesArray = debouncedZipCodes ? debouncedZipCodes.split(',').map((zipCode) => ['zipCodes', zipCode]) : []
+  const min = debouncedMinAge ? [['ageMin', debouncedMinAge]] : []
+  const max = debouncedMaxAge ? [['ageMax', debouncedMaxAge]] : []
+  const queryParam = new URLSearchParams([...breedsArray, ...zipCodesArray, ...min, ...max])
   const url = new URL('https://frontend-take-home-service.fetch.com/dogs/search')
   url.search = queryParam.toString()
 
   return useSWR<DogId, Error>(
     { url: url.toString(), method: 'GET' },
     ({ url, method }: DogFetcherType) => dogFetcher(url, method),
-    { revalidateOnFocus: false },
+    { revalidateOnFocus: false, dedupingInterval: 50000 },
   )
 }
 
