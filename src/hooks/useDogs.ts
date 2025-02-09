@@ -22,7 +22,14 @@ export const dogFetcher = async (url: string, method: string, body: string[] = [
 
   return response.json()
 }
-export const useDogIds = (sort: string, breeds?: string, zipCodes?: string, minAge?: string, maxAge?: string, ) => {
+export const useDogIds = (
+  sort: string,
+  breeds?: string,
+  zipCodes?: string,
+  minAge?: string,
+  maxAge?: string,
+  nextOrPrevURL?: string,
+) => {
   const [debouncedBreeds, setDebouncedBreeds] = useState(breeds)
   const [debouncedZipCodes, setDebouncedZipCodes] = useState(zipCodes)
   const [debouncedMinAge, setDebouncedMinAge] = useState(minAge)
@@ -53,7 +60,7 @@ export const useDogIds = (sort: string, breeds?: string, zipCodes?: string, minA
   url.search = queryParam.toString()
 
   return useSWR<DogId, Error>(
-    { url: url.toString(), method: 'GET' },
+    { url: nextOrPrevURL ?? url.toString(), method: 'GET' },
     ({ url, method }: DogFetcherType) => dogFetcher(url, method),
     { revalidateOnFocus: false, dedupingInterval: 50000 },
   )

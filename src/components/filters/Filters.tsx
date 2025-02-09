@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useDogBreeds } from '../../hooks/useDogs'
 import ReactSlider from 'react-slider'
 import './Filters.css'
-import Dropdown from '../Dropdown/Dropdown'
+import Dropdown from '../dropdown/Dropdown'
 
 interface FiltersProps {
   handleFilterChange: (selected: Option[], paramKey: string) => void

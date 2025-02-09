@@ -1,8 +1,9 @@
 import { useDogIds, useDogs } from '../hooks/useDogs'
-import React from 'react'
+import React, { useState } from 'react'
 import { Option } from '../components/multiSelect/MultiSelect'
 import { useSearchParams } from 'react-router-dom'
 import Filters from '../components/filters/Filters'
+import Pagination from '../components/pagination/Pagination'
 
 export const Dogs = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -11,12 +12,14 @@ export const Dogs = () => {
   const minAgeFilter = searchParams.get('ageMin')
   const maxAgeFilter = searchParams.get('ageMax')
   const sortFilter = searchParams.get('sort')
+  const [paginatedURL, setPaginatedURL] = useState<string | undefined>(undefined)
   const dogIds = useDogIds(
     sortFilter ?? 'breed:asc',
     breedsFilter ?? undefined,
     zipCodesFilter ?? undefined,
     minAgeFilter ?? undefined,
     maxAgeFilter ?? undefined,
+    paginatedURL,
   )
   const dogs = useDogs(dogIds?.data?.resultIds ?? [])
 
@@ -28,6 +31,7 @@ export const Dogs = () => {
         const selectedValues = selected.map((breedOption) => breedOption.value).join(',')
         prevParams.set(paramKey, selectedValues)
       }
+      setPaginatedURL(undefined)
       return prevParams
     })
   }
@@ -38,6 +42,12 @@ export const Dogs = () => {
         {/* Filters (Left Side) */}
         <div className="col-md-4">
           <Filters handleFilterChange={handleFilterChange} />
+          <Pagination
+            totalNumberOfResults={dogIds?.data?.total}
+            prevURL={dogIds?.data?.prev}
+            nextURL={dogIds?.data?.next}
+            handlePaginationClick={setPaginatedURL}
+          />
         </div>
 
         {/* Results (Right Side) */}
