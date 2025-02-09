@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useDogBreeds } from '../../hooks/useDogs'
 import ReactSlider from 'react-slider'
 import './Filters.css'
+import Dropdown from '../Dropdown/Dropdown'
 
 interface FiltersProps {
   handleFilterChange: (selected: Option[], paramKey: string) => void
@@ -20,6 +21,9 @@ const Filters = ({ handleFilterChange }: FiltersProps) => {
 
   const [minAge, setMinAge] = useState(0)
   const [maxAge, setMaxAge] = useState(30)
+
+  const [sort, setSort] = useState('breed')
+  const [sortDirection, setSortDirection] = useState('asc')
 
   const handleDogBreedChange = (selected: Option[]) => {
     handleFilterChange(selected, 'breed')
@@ -46,8 +50,39 @@ const Filters = ({ handleFilterChange }: FiltersProps) => {
     setMaxAge(minMax[1])
   }
 
+  const handleSortOrDirectionOptionSelected = (option: string, sortOrDirection: 'sort' | 'direction') => {
+    const value =
+      sortOrDirection === 'sort'
+        ? `${option.toLowerCase()}:${sortDirection.toLowerCase()}`
+        : `${sort.toLowerCase()}:${option.toLowerCase()}`
+    const sortDirectionFilterOption: Option = {
+      label: 'sort',
+      value,
+    }
+
+    sortOrDirection === 'sort' ? setSort(option) : setSortDirection(option)
+    handleFilterChange([sortDirectionFilterOption], 'sort')
+  }
+
   return (
     <div className="card p-3 shadow-sm">
+      <div className="d-flex justify-content-between mb-2">
+        <div className="d-flex flex-column text-center">
+          <span>Sorted By</span>
+          <Dropdown
+            handleOnOptionSelected={(option) => handleSortOrDirectionOptionSelected(option, 'sort')}
+            options={['Breed', 'Age', 'Name']}
+          />
+        </div>
+        <div className="d-flex flex-column text-center">
+          <span>Sort Order</span>
+          <Dropdown
+            handleOnOptionSelected={(option) => handleSortOrDirectionOptionSelected(option, 'direction')}
+            options={['asc', 'desc']}
+          />
+        </div>
+      </div>
+
       {/* Breed Filter */}
       <div className="mb-3">
         <h6>Breeds</h6>

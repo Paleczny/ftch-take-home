@@ -10,7 +10,9 @@ export const Dogs = () => {
   const zipCodesFilter = searchParams.get('zipCode')
   const minAgeFilter = searchParams.get('ageMin')
   const maxAgeFilter = searchParams.get('ageMax')
+  const sortFilter = searchParams.get('sort')
   const dogIds = useDogIds(
+    sortFilter ?? 'breed:asc',
     breedsFilter ?? undefined,
     zipCodesFilter ?? undefined,
     minAgeFilter ?? undefined,
@@ -51,6 +53,7 @@ export const Dogs = () => {
                     <img src={result.img} alt={''} style={{ width: '100px' }}></img>
                     <span>{result.zip_code}</span>
                     <span>{result.age}</span>
+                    <span>{result.breed}</span>
                     <button className="btn btn-outline-primary btn-sm mt-2">View Details</button>
                   </div>
                 </div>

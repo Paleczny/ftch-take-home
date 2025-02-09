@@ -22,11 +22,12 @@ export const dogFetcher = async (url: string, method: string, body: string[] = [
 
   return response.json()
 }
-export const useDogIds = (breeds?: string, zipCodes?: string, minAge?: string, maxAge?: string) => {
+export const useDogIds = (sort: string, breeds?: string, zipCodes?: string, minAge?: string, maxAge?: string, ) => {
   const [debouncedBreeds, setDebouncedBreeds] = useState(breeds)
   const [debouncedZipCodes, setDebouncedZipCodes] = useState(zipCodes)
   const [debouncedMinAge, setDebouncedMinAge] = useState(minAge)
   const [debouncedMaxAge, setDebouncedMaxAge] = useState(maxAge)
+  const [debouncedSort, setDebouncedSort] = useState(sort)
 
   // Debounce function to delay updating the state
   useEffect(() => {
@@ -35,17 +36,19 @@ export const useDogIds = (breeds?: string, zipCodes?: string, minAge?: string, m
       setDebouncedZipCodes(zipCodes)
       setDebouncedMinAge(minAge)
       setDebouncedMaxAge(maxAge)
+      setDebouncedSort(sort)
     }, 500)
 
     return () => clearTimeout(handler)
-  }, [breeds, zipCodes, minAge, maxAge])
+  }, [breeds, zipCodes, minAge, maxAge, sort])
 
   // Construct Query Parameters
   const breedsArray = debouncedBreeds ? debouncedBreeds.split(',').map((breed) => ['breeds', breed]) : []
   const zipCodesArray = debouncedZipCodes ? debouncedZipCodes.split(',').map((zipCode) => ['zipCodes', zipCode]) : []
   const min = debouncedMinAge ? [['ageMin', debouncedMinAge]] : []
   const max = debouncedMaxAge ? [['ageMax', debouncedMaxAge]] : []
-  const queryParam = new URLSearchParams([...breedsArray, ...zipCodesArray, ...min, ...max])
+  const sortArray = debouncedSort ? [['sort', debouncedSort]] : []
+  const queryParam = new URLSearchParams([...breedsArray, ...zipCodesArray, ...min, ...max, ...sortArray])
   const url = new URL('https://frontend-take-home-service.fetch.com/dogs/search')
   url.search = queryParam.toString()
 
