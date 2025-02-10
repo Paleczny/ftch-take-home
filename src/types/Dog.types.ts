@@ -6,3 +6,14 @@ export interface Dog {
   zip_code: string
   breed: string
 }
+
+export interface DogId {
+  resultIds: string[]
+  total: number
+  next?: string
+  prev?: string
+}
+
+export interface DogMatch {
+  match: string
+}

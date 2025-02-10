@@ -1,6 +1,5 @@
 import useSWR from 'swr'
-import { DogId } from '../types/DogId.types'
-import { Dog } from '../types/Dog.types'
+import { DogId, Dog } from '../types/Dog.types'
 import { useEffect, useState } from 'react'
 
 interface DogFetcherType {
@@ -64,6 +63,11 @@ export const useDogIds = (
     ({ url, method }: DogFetcherType) => dogFetcher(url, method),
     { revalidateOnFocus: false, dedupingInterval: 50000 },
   )
+}
+
+export const getMatchID = (dogIDs: string[]) => {
+  const url = 'https://frontend-take-home-service.fetch.com/dogs/match'
+  return dogFetcher(url, 'POST', dogIDs)
 }
 
 export const useDogs = (dogIDs: string[]) => {
