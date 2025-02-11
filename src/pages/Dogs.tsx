@@ -5,6 +5,8 @@ import { useSearchParams } from 'react-router-dom'
 import Filters from '../components/filters/Filters'
 import Pagination from '../components/pagination/Pagination'
 import { DogMatch } from '../types/Dog.types'
+import DogList from '../components/dogList/DogList'
+import { useFavorites } from '../contexts/FavoritesContext'
 
 export const Dogs = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -23,7 +25,7 @@ export const Dogs = () => {
     paginatedURL,
   )
   const dogs = useDogs(dogIds?.data?.resultIds ?? [])
-  const [favorites, setFavorites] = useState<string[]>()
+  const { favoriteIds } = useFavorites()
   const [matchID, setMatchId] = useState<string>()
   const matchedDog = useDogs([matchID ?? ''])
 
@@ -40,21 +42,9 @@ export const Dogs = () => {
     })
   }
 
-  const handleOnFavorite = (dogId: string) => {
-    setFavorites((prev) => {
-      if (prev?.includes(dogId)) {
-        return prev.filter((dId) => dId !== dogId)
-      } else {
-        return prev ? [...prev, dogId] : [dogId]
-      }
-    })
-  }
-
   const getMatch = () => {
-    getMatchID(favorites ?? []).then((matchedId: DogMatch) => setMatchId(matchedId.match))
+    getMatchID(Array.from(favoriteIds) ?? []).then((matchedId: DogMatch) => setMatchId(matchedId.match))
   }
-
-  console.log('favorites: ', favorites)
 
   return (
     <div className="container mt-4">
@@ -83,36 +73,7 @@ export const Dogs = () => {
 
         {/* Results (Right Side) */}
         <div className="col-md-8">
-          <div className="row">
-            {dogs?.data?.length === 0 ? (
-              <p className="text-muted">No results found. Try adjusting filters.</p>
-            ) : (
-              dogs?.data?.map((result, index) => (
-                <div className="col-md-6 mb-3" key={index}>
-                  <div className="card p-3 shadow-sm">
-                    <h6 className="mb-1">{result.name}</h6>
-                    <img src={result.img} alt={''} style={{ width: '100px' }}></img>
-                    <span>{result.zip_code}</span>
-                    <span>{result.age}</span>
-                    <span>{result.breed}</span>
-                    <div>
-                      <input
-                        className="form-check-input"
-                        checked={favorites?.includes(result.id)}
-                        onClick={() => handleOnFavorite(result.id)}
-                        type="checkbox"
-                        id="flexCheckDefault"
-                      />
-                      <label className="form-check-label" htmlFor="flexCheckDefault">
-                        Favorite
-                      </label>
-                    </div>
-                    <button className="btn btn-outline-primary btn-sm mt-2">View Details</button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+          <DogList dogs={dogs.data ?? []} />
         </div>
       </div>
     </div>

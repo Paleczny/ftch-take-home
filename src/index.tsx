@@ -7,6 +7,7 @@ import { NotFound } from './pages/NotFound'
 import Login from './pages/Login'
 import ProtectedRoutes from './components/protectedRoutes/protectedRoutes'
 import { AuthProvider } from './contexts/AuthContext'
+import { FavoritesProvider } from './contexts/FavoritesContext'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
@@ -40,7 +41,9 @@ const router = createBrowserRouter([
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <FavoritesProvider>
+        <RouterProvider router={router} />
+      </FavoritesProvider>
     </AuthProvider>
   </React.StrictMode>,
 )
